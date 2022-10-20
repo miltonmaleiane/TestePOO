@@ -4,17 +4,57 @@
  */
 package gui;
 
+import dao.UsuarioDAO;
+import java.util.ArrayList;
+import modelo.ModelTable;
+import modelo.Usuario;
+
 /**
  *
  * @author Maleiane-PC
  */
 public class frmPrincipalView extends javax.swing.JFrame {
-
+ private Usuario objUsuario;
+    private UsuarioDAO objDAO;
+    private boolean buscar = false;
     /**
      * Creates new form frmPrincipalView
      */
     public frmPrincipalView() {
         initComponents();
+          carregarTable(null);
+    }
+// Metodo que realiza conexao com o banco, faz uma instrucao Query(select)
+    // para jogar na JTable atraves do modelo de tabela (ModelTabel.java)
+    public void carregarTable(Usuario objUsuario) {
+             LoginGUI login = new LoginGUI ();
+              login.pegaRetornoL();
+              System.out.println("Retorno---"+ login.pegaRetornoL());
+          objUsuario = new Usuario();
+          String senha = objUsuario.getSenha();
+          System.out.println("senha dele"+senha);
+        objDAO = new UsuarioDAO();
+        ArrayList dados = new ArrayList();
+        if (buscar) {
+            dados = objDAO.buscar(objUsuario);
+        } else {
+            objUsuario = new Usuario();
+             dados = objDAO.listarUsuario(objUsuario);
+        }
+        String[] colunas = objUsuario.getColunas();
+
+        ModelTable modelo = new ModelTable(dados, colunas);
+
+        tbListagemUsuario.setModel(modelo);
+        tbListagemUsuario.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tbListagemUsuario.getColumnModel().getColumn(0).setResizable(false);
+        tbListagemUsuario.getColumnModel().getColumn(1).setPreferredWidth(120);
+        tbListagemUsuario.getColumnModel().getColumn(1).setResizable(false);
+        tbListagemUsuario.getColumnModel().getColumn(2).setPreferredWidth(250);
+        tbListagemUsuario.getColumnModel().getColumn(2).setResizable(false);
+        tbListagemUsuario.getTableHeader().setReorderingAllowed(false);
+        //  tbListagemUsuario.setAutoResizeMode(tbListagemUsuario.AUTO_RESIZE_ALL_COLUMNS);
+        // tbListagemUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     /**
@@ -27,10 +67,45 @@ public class frmPrincipalView extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbListagemUsuario = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Tela do USER");
+
+        tbListagemUsuario.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nome", "CPF", "Email", "Telefone"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbListagemUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbListagemUsuarioMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbListagemUsuario);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -40,6 +115,11 @@ public class frmPrincipalView extends javax.swing.JFrame {
                 .addGap(84, 84, 84)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(127, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -47,10 +127,20 @@ public class frmPrincipalView extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(253, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(94, 94, 94)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(94, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tbListagemUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbListagemUsuarioMouseClicked
+        // TODO add your handling code here:
+        //selectRegistryTable();
+    }//GEN-LAST:event_tbListagemUsuarioMouseClicked
 
     /**
      * @param args the command line arguments
@@ -89,5 +179,7 @@ public class frmPrincipalView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbListagemUsuario;
     // End of variables declaration//GEN-END:variables
 }

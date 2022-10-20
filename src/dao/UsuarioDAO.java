@@ -7,6 +7,7 @@ package dao;
 
 import com.mysql.cj.protocol.Resultset;
 import factory.ConnectionFactory;
+import gui.LoginGUI;
 import modelo.Usuario;
 import java.sql.*;
 import java.sql.PreparedStatement;
@@ -119,7 +120,7 @@ public class UsuarioDAO {
                 stmt.setString(1, objUsuario.getId());
                 stmt.execute();
                 stmt.close();
-
+                System.out.println("");
             }
         } catch (SQLException u) {
             throw new RuntimeException(u);
@@ -132,6 +133,48 @@ public class UsuarioDAO {
             ArrayList dado = new ArrayList();
 
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM usuario");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                dado.add(new Object[]{
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("Senha"),
+                    rs.getString("email"),
+                    rs.getString("telefone"),
+                     rs.getString("passatempos"),
+                    rs.getString("Biografia"),
+                    rs.getString("nomeUsuario"),
+                    rs.getString("Habilidades")
+                });
+
+            }
+            ps.close();
+            rs.close();
+            connection.close();
+
+            return dado;
+        } catch (SQLException e) {
+            e.getMessage();
+            JOptionPane.showMessageDialog(null, "Erro preencher o ArrayList");
+            return null;
+        }
+    }
+    
+    public ArrayList listarUsuario(Usuario objUsuario) {
+        System.out.println("ID dele"+objUsuario.getSenha());
+        LoginGUI login = new LoginGUI ();
+              login.pegaRetornoL();
+              System.out.println("Retorno---"+ login.pegaRetornoL());
+        try {
+
+            ArrayList dado = new ArrayList();
+
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM usuario WHERE usuario.nomeUsuario = ?");
+       
+            System.out.println("ID USER mss"+ login.pegaRetornoL());
+                ps.setString(1, login.pegaRetornoL());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

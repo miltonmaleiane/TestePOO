@@ -121,6 +121,11 @@ public class LoginGUI extends javax.swing.JFrame {
                 objfrmPrincipalView.setVisible(true);
                 dispose();
             } else {
+                if(nome_usuario.equals("admin")&&(senha_usuario.equals("admin"))){
+                    UsuarioGUI admin = new  UsuarioGUI();
+                    admin.setVisible(true);
+                    dispose();
+                }
                 JOptionPane.showMessageDialog(null, "Usuario ou senha incorretos");
             }
             
